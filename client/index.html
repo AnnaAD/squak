@@ -36,7 +36,8 @@
 	var chatText = document.getElementById('chat-text');
 	var chatInput = document.getElementById('chat-input');
 	var chatForm = document.getElementById('chat-form');
-	var ctx = document.getElementById("ctx").getContext("2d");
+	var canvas = document.getElementById("ctx")
+	var ctx = canvas.getContext("2d");
 	ctx.font = '10px Arial';
 	
 	var socket = io();
@@ -45,7 +46,7 @@
 		ctx.fillStyle = "white";
 		ctx.fillRect(0,0,500,500);
 		
-			
+		ctx.fillStyle = "black";
 		for(var i = 0 ; i < data.bullet.length; i++) {
 			ctx.fillRect(data.bullet[i].x-2.5,data.bullet[i].y-2.5,5 ,5);	
 		}	
@@ -100,14 +101,17 @@
 	
 	document.onmousedown = function(event){
 		socket.emit('keyPress',{inputId:'attack',state:true});
+		console.log('yep');
 	}
 	document.onmouseup = function(event){
 		socket.emit('keyPress',{inputId:'attack',state:false});
 	}
 	document.onmousemove = function(event){
-		var x = -250 + event.clientX - 8;
-		var y = -250 + event.clientY - 8;
-		var angle = Math.atan2(y,x) / Math.PI * 180;
+		var rect = canvas.getBoundingClientRect();
+		var x = event.clientX - rect.left;
+		var y = event.clientY - rect.top;
+		console.log(x + " " + y);
+		var angle = Math.atan2(x,y) / Math.PI * 180;
 		socket.emit('keyPress',{inputId:'mouseAngle',state:angle});
 	}
 	

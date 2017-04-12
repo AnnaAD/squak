@@ -55,6 +55,7 @@ var Player = function(id){
 		}
 	}
 	self.shootBullet = function(angle){
+		console.log("shooting" + self.x + self.y);
 		var b = Bullet(self.id,angle);
 		b.x = self.x;
 		b.y = self.y;
