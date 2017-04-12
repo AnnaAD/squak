@@ -108,10 +108,10 @@
 	}
 	document.onmousemove = function(event){
 		var rect = canvas.getBoundingClientRect();
-		var x = event.clientX - rect.left;
-		var y = event.clientY - rect.top;
+		var x = -250 +(event.clientX - rect.left);
+		var y = -250 + (event.clientY - rect.top);
 		console.log(x + " " + y);
-		var angle = Math.atan2(x,y) / Math.PI * 180;
+		var angle = Math.atan2(y,x) / Math.PI * 180;
 		socket.emit('keyPress',{inputId:'mouseAngle',state:angle});
 	}
 	
