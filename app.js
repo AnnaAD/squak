@@ -51,15 +51,15 @@ var Player = function(id){
 		super_update();
 		
 		if(self.pressingAttack){
-			self.shootBullet(self.mouseAngle);
+			//self.shootBullet(self.mouseAngle);
 		}
 	}
-	self.shootBullet = function(angle){
+	/*self.shootBullet = function(angle){
 		//console.log("shooting" + self.x + self.y);
 		var b = Bullet(self.id,angle);
 		b.x = self.x;
 		b.y = self.y;
-	}
+	}*/
 	
 	
 	self.updateSpd = function(){
@@ -116,7 +116,7 @@ Player.update = function(){
 }
 
 
-var Bullet = function(parent,angle){
+/*var Bullet = function(parent,angle){
 	var self = Entity();
 	self.id = Math.random();
 	self.spdX = Math.cos(angle/180*Math.PI) * 10;
@@ -157,9 +157,9 @@ Bullet.update = function(){
 			});		
 	}
 	return pack;
-}
+}*/
 
-var DEBUG = true;
+var DEBUG = false;
 
 var io = require('socket.io')(serv,{});
 io.sockets.on('connection', function(socket){
@@ -193,7 +193,7 @@ io.sockets.on('connection', function(socket){
 setInterval(function(){
 	var pack = {
 		player:Player.update(),
-		bullet:Bullet.update(),
+		//bullet:Bullet.update(),
 	}
 	
 	for(var i in SOCKET_LIST){
