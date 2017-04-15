@@ -2,45 +2,85 @@
 <html>
 <head>
 	<title> Squak </title>
-	<style>
-		body {
-			background-color: #696969;
-			font-family: sans-serif;
+	<link rel = "stylesheet" type="text/css" href="style.css">
+	<script>
+		function colorChange(x, color) {
+			x.style.background = color;
 		}
-		#chatcontainer {
-			background-color: #A0A0A0;
-			border-radius:10px;
-			text-align: left;
-			padding: 4px;
-			width: 498px;
-		}
-	</style>
+	</script>
 </head>
-<center>
-<h2> Squak </h2>
-<canvas id="ctx" width="500" height="500"></canvas>
+<body>
+<div id = "loginContent">
+	<div id = "back"> </div>
 
-<div id = "chatcontainer">
-	<div id="chat-text" style="width:500px;height:100px;overflow-y:scroll">
-		<div>Welcome to Squak Chat</div>
+	<div id = "login">
+		<h3 class = "centerText"> Welcome to Squak </h3>
+		 <p> Username: <input id="signDiv-username" type="text"></input></p>
+   		 <p> Password: <input id="signDiv-password" type="password"></input> </p>
+    	<div class = "centerDiv">
+    		<button id = "signDiv-signIn" onmouseover = "colorChange(this, '#438443')" onmouseout = "colorChange(this, 'green')">Sign In</button>
+    		<button id = "signDiv-signUp" onmouseover = "colorChange(this, '#438443')" onmouseout = "colorChange(this, 'green')">Sign Up</button>
+    	</div>
 	</div>
-
-	<form id="chat-form">
-		<input id="chat-input" type="text" style="width:490px;float:center"></input>
-	</form>
 </div>
-</center>
+<div id = "gameContent">
+	<h2 class = "centerText"> Squak </h2>
+	<div class = "centerDiv">
+		<canvas id="ctx" width="500" height="500"></canvas>
+
+		<div class = "centerDiv" id = "chatcontainer">
+			<div id="chat-text" style="width:500px;height:100px;overflow-y:scroll">
+				<div>Welcome to Squak Chat</div>
+			</div>
+
+			<form id="chat-form">
+				<input id="chat-input" type="text" style="width:490px;" autocomplete = "off"></input>
+			</form>
+		</div>
+	</div>
+</div>
+
 
 <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
 <script>
-	var chatText = document.getElementById('chat-text');
+
+	var socket = io();
+
+	//SIGNIN CODE
+	var signDiv = document.getElementById('loginContent');
+    var signDivUsername = document.getElementById('signDiv-username');
+    var signDivSignIn = document.getElementById('signDiv-signIn');
+    var signDivSignUp = document.getElementById('signDiv-signUp');
+    var signDivPassword = document.getElementById('signDiv-password');
+    var gameDiv = document.getElementById('gameContent');
+   
+    signDivSignIn.onclick = function(){
+        socket.emit('signIn',{username:signDivUsername.value,password:signDivPassword.value});
+    }
+    signDivSignUp.onclick = function(){
+        socket.emit('signUp',{username:signDivUsername.value,password:signDivPassword.value});
+    }
+    socket.on('signInResponse',function(data){
+        if(data.success){
+            signDiv.style.display = 'none';
+        } else
+            alert("Incorrect username/password combination...");
+    });
+    socket.on('signUpResponse',function(data){
+        if(data.success){
+            alert("Sign up successful!");
+        } else
+            alert("Sign up failed. Username taken.");
+    });
+
+    //GAMECODE
+
+    var chatText = document.getElementById('chat-text');
 	var chatInput = document.getElementById('chat-input');
 	var chatForm = document.getElementById('chat-form');
 	var canvas = document.getElementById("ctx")
 	var ctx = canvas.getContext("2d");
 	ctx.font = '10px Arial';
-	
-	var socket = io();
 		
 	socket.on('newPositions',function(data){
 		ctx.fillStyle = "white";
@@ -115,9 +155,9 @@
 		console.log(x + " " + y);
 		var angle = Math.atan2(y,x) / Math.PI * 180;
 		socket.emit('keyPress',{inputId:'mouseAngle',state:angle});
-	}
-	
-	
-	
+	}	
 	
 </script>
+
+</body>
+</html>
